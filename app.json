@@ -19,13 +19,19 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
     },
     "extra": {
       "eas": {
         "projectId": "92e1dff5-e380-4071-98d1-e359f94754d4"
       }
     },
-    "owner": "vmskoupil"
+    "owner": "vmskoupil",
+    "plugins": [
+      "expo-router"
+    ],
+    "scheme": "cashmine"
   }
 }
