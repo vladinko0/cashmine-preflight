@@ -20,6 +20,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "92e1dff5-e380-4071-98d1-e359f94754d4"
+      }
+    },
+    "owner": "vmskoupil"
   }
 }
