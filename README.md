@@ -26,7 +26,7 @@ Obsah aplikácie je pôvodná Expo blank-typescript šablóna; nejde o riešenie
 - EAS účet: `vmskoupil`; projekt `cashmine-preflight` je vytvorený a prepojený.
 - Živá URL bola overená v prehliadači bez prihlásenia: https://vmskoupil-cashmine-preflight.expo.app
 - Dashboard: https://expo.dev/accounts/vmskoupil/projects/cashmine-preflight
-- Verejný GitHub remote a push zatiaľ neboli vytvorené ani overené. Automatická kontrola zablokovala zverejnenie prípravnej histórie s lokálnymi cestami a pracovnými nastaveniami; vyžaduje sa výslovný súhlas používateľa.
+- Verejný GitHub repozitár s celou prípravnou históriou bol vytvorený a pushnutý po výslovnom súhlase používateľa: https://github.com/vladinko0/cashmine-preflight
 - Skutočný telefón a vzdialené API neboli overené.
 - ai-logs/ zatiaľ obsahuje iba pokyny, nie export skutočnej konverzácie.
 
