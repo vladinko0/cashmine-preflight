@@ -157,3 +157,25 @@ For a failed claim I will make the copy more precise so it clearly shows the ret
 ## Tool evidence — additional live flows
 
 Activity displayed 20 initial records, then loaded the remaining records and showed the end-of-history marker. The original ETH claim reference occurred once in the rendered history. A 10 USDT claim completed automatically (reference clm_37e979c965f0, fee 1.5, received 8.5). A 0.0005 BTC claim (reference clm_d0252b5f4650) visibly entered pending; BTC was paused while other assets remained claimable. After a reload it showed failed: the destination rejected the transfer and the server returned the amount. No local refund was applied. The source was then adjusted to display Returned to available: gross amount for a failed claim instead of a fee/net payout summary. Also prevented a disconnected request instance from overwriting a newer token session's saved state.
+
+## Assistant — implementation complete, final deployment
+
+“The implementation, including Activity, is complete. I am finishing the last deployment: the invalid-token state fix, showing the returned amount for a failed claim, and protection against a delayed response from a disconnected session.
+
+I am not marking a physical phone as verified yet; I am waiting for your reply. Browser tests at 390 px and live claim scenarios are recorded in the roadmap.”
+
+## User — physical phone confirmation
+
+“It works on iPhone.”
+
+This answered the request to open the live web on a physical phone, enter the token there, check balances and open the Claim form without submitting another claim.
+
+## Assistant — final handoff update
+
+“Thank you, I am recording your confirmation: balances and opening the claim form work on the physical iPhone. Submission and error branches were verified in the browser.
+
+The final version is deployed; I also checked the fixed Reconnect action and the returned amount on a failed claim. All that remains is saving the final verification summary and submission email draft.”
+
+## Tool outcomes — final state
+
+Runtime commit 7f76a88 was pushed and deployed to the stable EAS URL. Public GitHub returned HTTP 200 without authentication and local/remote HEAD matched. The final live browser showed Returned to available: 0.0005 BTC for the failed claim. An independent invalid-token session showed No balance snapshot loaded and Reconnect, without the incorrect loading text. The source has 20 passing focused unit tests; latest relevant TypeScript, lint, format check and production export checks passed. The original ETH timeout/reload/replay, successful USDT and pending/failed BTC were live fake-data API observations. iPhone confirmation covers Home and opening the form only. No email has been sent, no production funds moved, and no Android or full physical-phone claim proof is claimed.

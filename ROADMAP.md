@@ -82,24 +82,24 @@ Začať iba ak sú Home, Claim a požadované finančné testy funkčné.
 
 ## 5. Overenie, poznámky a AI logy — 15:25–15:45 UTC
 
-- [ ] Cielené kontroly: yarn test, yarn lint, yarn typecheck a yarn build:web. Po oprave zopakovať dotknutú kontrolu.
-- [ ] Ručne: nový token, jeho zmena, refresh, min/max/precision, dvojklik, unknown retry, pending → terminal, starý snapshot a úzky viewport. Rozlíšiť reálny telefón od browser viewportu a simulované chyby od živého API.
-- [ ] NOTES.md približne jedna strana s presnými sekciami Decisions; Working with AI; Not done / known issues.
-- [ ] Decisions pokrývajú reprezentáciu peňazí, zostatok po claime, unknown výsledok, alternatívy a dôvody.
-- [ ] Working with AI: tri skutočné momenty s konkrétnym odkazom do ai-logs/: neúspešný prompt a jeho zmena; chybný/rizikový AI návrh a odhalenie; nesúhlas alebo odmietnutie návrhu. Ak moment nenastal, nevymýšľať históriu.
-- [ ] Uložiť skutočné AI konverzácie bez uhladzovania; odstrániť token a súkromné údaje s označením redakcie. Anglické preklady pôvodne slovenských správ jasne označiť ako preklad. Súhrn nenahrádza úplnú konverzáciu. Nepublikovať nesúvisiacu WoGu komunikáciu.
-- [ ] README zúžiť na live link, lokálne spustenie a čo funguje; oddeliť pripravenú šablónu od skutočne implementovaných funkcií.
-- [ ] Known issues: presne pomenovať vynechané body, obmedzenia a ďalší krok, vrátane expiry tokenu bez zverejnenia jeho hodnoty.
+- [x] Cielené kontroly: yarn test, yarn lint, yarn typecheck a yarn build:web. Po oprave zopakovať dotknutú kontrolu.
+- [x] Ručne: nový token, jeho zmena, refresh, min/max/precision, dvojklik, unknown retry, pending → terminal, starý snapshot a úzky viewport. Rozlíšiť reálny telefón od browser viewportu a simulované chyby od živého API.
+- [x] NOTES.md približne jedna strana s presnými sekciami Decisions; Working with AI; Not done / known issues.
+- [x] Decisions pokrývajú reprezentáciu peňazí, zostatok po claime, unknown výsledok, alternatívy a dôvody.
+- [x] Working with AI: tri skutočné momenty s konkrétnym odkazom do ai-logs/: neúspešný prompt a jeho zmena; chybný/rizikový AI návrh a odhalenie; nesúhlas alebo odmietnutie návrhu. Ak moment nenastal, nevymýšľať históriu.
+- [x] Uložiť skutočné AI konverzácie bez uhladzovania; odstrániť token a súkromné údaje s označením redakcie. Anglické preklady pôvodne slovenských správ jasne označiť ako preklad. Súhrn nenahrádza úplnú konverzáciu. Nepublikovať nesúvisiacu WoGu komunikáciu.
+- [x] README zúžiť na live link, lokálne spustenie a čo funguje; oddeliť pripravenú šablónu od skutočne implementovaných funkcií.
+- [x] Known issues: presne pomenovať vynechané body, obmedzenia a ďalší krok, vrátane expiry tokenu bez zverejnenia jeho hodnoty.
 
 ## 6. Finálne nasadenie a odovzdanie — 15:45–15:55 UTC
 
-- [ ] Skontrolovať staged diff, históriu a finálny export na absenciu tokenu; token sa zadáva až pri otvorení aplikácie, reviewer použije vlastný.
-- [ ] Finálny commit a push celej histórie, bez squashovania; skontrolovať zhodu lokálneho a remote commitu.
-- [ ] EAS deploy čerstvého web exportu, overiť verejný prístup bez Expo/GitHub loginu, refresh a hlavný tok na live URL.
-- [ ] Skontrolovať README, NOTES.md a odkazy do ai-logs/ vo verejnom repozitári.
-- [ ] Pripraviť odovzdanie: verejný repo link, live link, približný čas strávený úlohou. Email odosiela používateľ, kým výslovne nepoverí odoslaním.
-- [ ] Pri nedostupnom API zaznamenať skutočný čas a dôkaz chyby bez tokenu, uviesť v odovzdaní; nepredstierať úspešný tok.
-- [ ] Rezerva do 16:00 UTC; po tomto čase žiadny push ani redeploy.
+- [x] Skontrolovať staged diff, históriu a finálny export na absenciu tokenu; token sa zadáva až pri otvorení aplikácie, reviewer použije vlastný.
+- [x] Finálny commit a push celej histórie, bez squashovania; skontrolovať zhodu lokálneho a remote commitu.
+- [x] EAS deploy čerstvého web exportu, overiť verejný prístup bez Expo/GitHub loginu, refresh a hlavný tok na live URL.
+- [x] Skontrolovať README, NOTES.md a odkazy do ai-logs/ vo verejnom repozitári.
+- [x] Pripraviť odovzdanie: verejný repo link, live link, približný čas strávený úlohou. Email odosiela používateľ, kým výslovne nepoverí odoslaním.
+- API bolo dostupné a autentifikované živé toky prešli; žiadosť o náhradný termín nie je potrebná.
+- Odovzdanie je pripravené približne o 14:40 UTC; zostáva rezerva do 16:00 UTC. Po tomto čase žiadny push ani redeploy. Email zatiaľ nebol odoslaný.
 
 ## Aktuálne adresy
 
@@ -114,7 +114,7 @@ Odškrtnuté implementačné body znamenajú napísaný a lokálne overený rozs
 
 | Oblasť | Výsledok | Druh dôkazu |
 | --- | --- | --- |
-| TypeScript, lint, web export | Úspešné; po posledných malých UI úpravách sa opakujú len dotknuté kontroly | Lokálne nástroje |
+| TypeScript, lint, format:check, web export | Úspešné; posledné UI/session opravy overené typmi, cieleným lintom a novým exportom | Lokálne nástroje |
 | Finančná a bezpečnostná logika | 20 úspešných testov vrátane presnosti, idempotentného replay, stale snapshotu, 409, 429 a poškodeného journalu | Unit/fake transport; nie živé chyby 409/429 |
 | Home | USDT/BTC/ETH a presné súčty načítané na živom webe | Používateľské potvrdenie + browser |
 | ETH claim 0.01 | Skutočný timeout → unknown → reload → safe retry → pôvodný completed claim, fee 0.0012 a receive 0.0088 | Živé test API cez nasadený web |
@@ -124,6 +124,6 @@ Odškrtnuté implementačné body znamenajú napísaný a lokálne overený rozs
 | Activity | Prvá aj ďalšia strana, znamienka, historické failed/completed/reversal a koniec pri nextCursor null | Živý web + unit test deduplikácie |
 | Neplatný token | Chyba invalid/expired; Change token otvorilo prázdny formulár | Živý negatívny test so zástupným tokenom |
 | Mobilný viewport | 390 × 844, amount/Max/confirmation a claim výsledky | Browser; nejde o fyzický telefón |
-| Fyzický telefón | Čaká sa na konkrétne používateľské potvrdenie | Zatiaľ neoverené |
+| Fyzický iPhone | Používateľ potvrdil zostatky a otvorenie formulára Claim | Používateľské potvrdenie; nie dôkaz celého claim toku na telefóne |
 
-Osobný token bol presne porovnaný so zdrojmi, exportom, logmi a Git históriou: nenachádza sa v nich. V AI logoch je celé zadanie s redigovaným tokenom a skutočné diskusie aj neúspešné kontroly. Pred odovzdaním zostáva finálna kontrola, push a nasadenie posledných UI opráv; email posiela používateľ.
+Osobný token bol presne porovnaný so zdrojmi, exportom, logmi a Git históriou: nenachádza sa v nich. V AI logoch je celé zadanie s redigovaným tokenom a skutočné diskusie aj neúspešné kontroly. Finálny runtime commit `7f76a88` bol pushnutý a nasadený; živý web overil opravený Reconnect pri 401 aj presnú vrátenú sumu failed claimu. Odovzdávací email v SUBMISSION.md posiela používateľ. Android ani fyzické odoslanie claimu na iPhone sa neoznačujú ako overené.
