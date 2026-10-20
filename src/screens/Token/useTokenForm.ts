@@ -7,7 +7,11 @@ export const useTokenForm = (connect: Props['connect']) => {
   const submit = async () => {
     if (busy || !token.trim()) return;
     setBusy(true);
-    try { await connect(token); } finally { setBusy(false); }
+    try {
+      await connect(token);
+    } finally {
+      setBusy(false);
+    }
   };
   return { token, setToken, busy, submit };
 };

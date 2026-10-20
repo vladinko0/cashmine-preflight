@@ -1,34 +1,38 @@
 <!-- README.md -->
-# CashMine preflight
+# CashMine payback wallet
 
-Samostatná skúška Expo web prostredia pripravená pred začiatkom zadania.
-Obsah aplikácie je pôvodná Expo blank-typescript šablóna; nejde o riešenie úlohy.
+**Live app:** https://vmskoupil-cashmine-preflight.expo.app
 
-- Node 24.19.0; Yarn 1.22.x; Expo 58; TypeScript.
-- `yarn web`: lokálny webový vývoj.
-- `yarn lint`: kontrola ESLint.
-- `yarn typecheck`: kontrola TypeScriptu.
-- `yarn build:web`: produkčný export do dist/.
-- `yarn deploy:preview`: nový export a EAS preview nasadenie.
-- `yarn deploy:production`: nový export a stabilná verejná EAS adresa.
+## Run locally
 
-## Overené 20. 10. 2026 pred zadaním
+Requires Node 24.19.0 and Yarn 1.22.x.
 
-- Vytvorenie nového projektu cez oficiálny create-expo-app a inštalácia cez Yarn.
-- TypeScript bez chýb.
-- ESLint bez chýb (`yarn lint`; priame ESLint volanie po chybe detekcie verzie v Expo CLI).
-- Produkčný web export úspešný.
-- Aplikácia sa zobrazila v prehliadači na http://localhost:8093/.
-- GitHub CLI prihlásenie funguje pri vynechaní starého GH_TOKEN/GITHUB_TOKEN.
+```sh
+nvm use
+yarn install --frozen-lockfile
+yarn web
+```
 
-## Otvorené
+Enter your personal task API token in the app. The token is kept in this browser tab's session and sent only to the CashMine test API; no token or .env is needed in the source/build. Use **Change token** to connect another session. Closing the tab ends its saved token/claim recovery scope. Reviewers can enter their own tokens.
 
-- EAS účet: `vmskoupil`; projekt `cashmine-preflight` je vytvorený a prepojený.
-- Živá URL bola overená v prehliadači bez prihlásenia: https://vmskoupil-cashmine-preflight.expo.app
-- Dashboard: https://expo.dev/accounts/vmskoupil/projects/cashmine-preflight
-- Verejný GitHub repozitár s celou prípravnou históriou bol vytvorený a pushnutý po výslovnom súhlase používateľa: https://github.com/vladinko0/cashmine-preflight
-- Skutočný telefón a vzdialené API neboli overené.
-- ai-logs/ zatiaľ obsahuje iba pokyny, nie export skutočnej konverzácie.
+## What works
 
-Podrobný checklist, harmonogram a návrh odovzdania: [PREPARATION.md](PREPARATION.md).
-JSON a .nvmrc nemajú komentár s cestou, aby zostali validné pre príslušné nástroje.
+- Balances for each asset, exact USD totals, server snapshot age, loading/error/retry and refresh.
+- Claim options, amount/Max, precision/minimum/available validation, destination and fee/net review before confirmation.
+- A saved idempotent claim intent, safe replay after timeout or reload, status polling, and per-asset claim pause until a terminal result and fresh snapshot.
+- Paginated activity for accruals, reversals and claims, with retry and duplicate-page protection.
+- Exact bigint arithmetic and focused unit tests. The live test API returned an actual timeout; refreshing and safely retrying recovered the completed original claim.
+
+```sh
+yarn test
+yarn typecheck
+yarn lint
+yarn format:check
+yarn build:web
+# Export current code and publish the stable EAS URL:
+yarn deploy:production
+```
+
+[Decisions and known limits](NOTES.md) · [AI conversations](ai-logs/README.md)
+
+This repository retains its pre-task Expo/environment preparation commits. Timed implementation began after the brief; history is not squashed.

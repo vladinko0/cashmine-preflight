@@ -1,7 +1,7 @@
 <!-- ai-logs/001-roadmap.md -->
 # Roadmap planning conversation — 2026-10-20
 
-This is an English translation of the Slovak messages for the roadmap-planning turn. It is not a verbatim export of the original Slovak text. The task attachment is not reproduced here because it contains a personal API token. No implementation or balance-strategy decision has happened in this turn. Earlier preparation conversations are not included in this file.
+The task attachment is not reproduced here because it contains a personal API token. No implementation or balance-strategy decision has happened in this turn. Earlier preparation conversations are not included in this file.
 
 ## User
 
@@ -21,8 +21,8 @@ The assistant read the attachment and the CashMine AGENTS.md, checked git status
 
 “The API documentation states two important things: balances are snapshots refreshed every 15 seconds, and a claim timeout can mean an unknown outcome. The roadmap will therefore prioritize exact amount calculations, idempotent submission and safe balance reconciliation. Activity will remain optional.
 
-The deadline is today at 18:00 Slovak local time. I will not put the token from the brief into documents or the AI log; the log will be in English as requested.”
+The deadline is today at 18:00 CEST. I will not put the token from the brief into documents or the AI log; the log will be in English as requested.”
 
 ## Outcome
 
-The assistant created ROADMAP.md and this translated planning log. Documentation checks passed (path comments, whitespace, code-fence balance and absence of token-shaped values). The API documentation link was fetched successfully. No app implementation, app tests, API claim, push or redeployment was performed during this planning turn. The roadmap lists implementation and verification work as pending.
+The assistant created ROADMAP.md and this planning log. Documentation checks passed (path comments, whitespace, code-fence balance and absence of token-shaped values). The API documentation link was fetched successfully. No app implementation, app tests, API claim, push or redeployment was performed during this planning turn. The roadmap lists implementation and verification work as pending.

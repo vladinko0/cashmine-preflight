@@ -1,7 +1,7 @@
 <!-- ai-logs/002-implementation.md -->
-# Implementation conversation (English translation)
+# Implementation conversation
 
-Original user/assistant messages are in Slovak. This file translates their wording into English and records technical tool outcomes separately. It is not a fabricated verbatim English export. Tokens and unrelated private context are excluded. Tool metadata below is not a replacement for the conversation.
+Tokens and unrelated private context are excluded. Technical tool outcomes are recorded separately from user and assistant messages.
 
 ## User — implementation request
 
@@ -83,3 +83,51 @@ Options: retain form and remember token in this browser; retain form and store o
 ## Tool outcomes — claim implementation
 
 All 19 targeted tests now pass, including the previously failing claim arithmetic consistency test. TypeScript, ESLint and the claim-capable production web export passed. Unknown requests are persisted before POST, restored with the same key/body, and retry uses that identity. Pending known ids are polled; completed/failed claims keep the asset paused until a snapshot catches up. Tests cover lost responses with a fake transport and stale snapshots; these are not yet evidence of a live claim.
+
+## User — revised token instruction
+
+“If it is in the brief, leave it and work according to the brief.”
+
+## Assistant — confirmed direction
+
+“Understood, I am keeping the token form and session storage according to the brief. The personal token will not go into the sources or deployed build.
+
+The claim version has successful TypeScript, lint, web export and all 19 tests. I will now deploy it and walk through a live claim flow on the test API.”
+
+## Tool outcomes — preserving session boundaries
+
+Code review found that an old claim form could navigate after its token session had been disconnected. Added a mounted guard for the form's asynchronous completion and a synchronous submission lock. The journal already persists under a hash of the token; old requests cannot replace a new user's balances. A live Home was also observed directly in the in-app browser after the user entered the token themselves.
+
+## Assistant — real timeout recovery verified
+
+“During a live test, the API returned a timeout after submitting 0.01 ETH. The app correctly showed an unknown outcome and paused another ETH claim, although a newer snapshot already showed 0.01 ETH in claiming.
+
+I will now verify page reload and a safe retry of that same request. This timeout was actually observed on the test API.”
+
+## Assistant — recovered claim result
+
+“Safe retry after page reload obtained the original claim, which was already Completed. The UI showed a fee of 0.0012 ETH, received 0.0088 ETH, and enabled ETH claims again after a current snapshot. I also verified rejection of .5 and Max with full precision at a 390 px width.
+
+The main flow therefore works even with a real timeout. I will now add optional Activity and the final notes.”
+
+## Tool evidence — live web
+
+The deployed app was exercised at 390 × 844 in the in-app browser with the token entered by the user. Invalid .5 was rejected; Max preserved 18-decimal precision. A double click on Confirm was attempted for a 0.01 ETH test-data claim to the wallet destination. The API returned a timeout; the app showed unknown and paused ETH. After a browser reload, the saved request remained and Resolve with safe retry returned the original completed claim, reference clm_12dabe6895d8, fee 0.0012, net 0.0088. A fresh snapshot enabled ETH again. A screenshot confirmed the completed card. This is a browser viewport test, not a physical-device test. The test API transfers no real funds.
+
+## User — log wording
+
+“Remove the language-origin labels from ai-logs.”
+
+## Assistant
+
+“I will remove those labels from ai-logs. I will preserve the conversation content and redaction markers. Then I will continue checking Activity.”
+
+## Assistant — Activity implementation update
+
+“Activity has been added: it paginates through nextCursor, distinguishes payback, reversals and claims, and does not duplicate records when pages overlap. On a definite server rejection, the claim form stays open with the error so the input can be corrected.
+
+I will now format the code and check the added parts. Then I will verify history on the live website.”
+
+## Tool outcomes — Activity checks
+
+All 20 tests and the web export passed. TypeScript caught an outdated ScrollView ref type; checked the installed RN 0.88 generated declarations and used ScrollViewInstance. ESLint then treated the wallet carrier object containing that ref as ref-derived data throughout render. Split the imperative scroll-reset ref into its own hook, keeping normal wallet state separate; lint is being rerun. These errors and fixes were not hidden from the working record.

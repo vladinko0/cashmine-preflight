@@ -1,7 +1,11 @@
 // src/session/storage.ts
 const TOKEN_KEY = 'cashmine.session.token';
 export const readToken = (): string => {
-  try { return typeof window === 'undefined' ? '' : window.sessionStorage.getItem(TOKEN_KEY) ?? ''; } catch { return ''; }
+  try {
+    return typeof window === 'undefined' ? '' : (window.sessionStorage.getItem(TOKEN_KEY) ?? '');
+  } catch {
+    return '';
+  }
 };
 export const saveToken = (token: string) => window.sessionStorage.setItem(TOKEN_KEY, token);
 export const clearToken = () => window.sessionStorage.removeItem(TOKEN_KEY);

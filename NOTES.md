@@ -1,21 +1,20 @@
 <!-- NOTES.md -->
-# CashMine assessment notes
+# Assessment notes
 
 ## Decisions
 
-- Money: bigint integer units plus explicit decimal scales. A decimal library was the alternative; the small set of operations here made an isolated implementation and tests practical. USD conversion keeps the full price scale, adds before rounding and displays cents with half-up rounding. Total payback value includes available + pending + claiming; available value is shown separately.
-- After claim: preserve server balances with a clearly labelled snapshot time and show the claim separately. Block another claim of that asset until its outcome is known and a server snapshot is at least as new as its terminal updatedAt. The alternative was an optimistic reservation overlay. I rejected it because the API has no claim-to-snapshot revision, making double deductions and apparent balance rebounds harder to reconcile safely in this time limit. See [AI balance discussion](ai-logs/002-implementation.md#assistant--balance-after-claim-alternatives-and-selection).
-- Unknown submission: persist the exact body and a UUID Idempotency-Key before sending. A retry replays that identity; it does not create a new intent. Once a claim id is known, poll that id. Session storage keeps token and journal local to this browser tab and token scope; closing the tab ends that recovery scope.
-- A non-positive net receipt is blocked with an explicit message as a conservative UI assumption; the documented API only states min/max/precision constraints.
+**Amounts.** I chose bigint integer units with explicit decimal scales instead of floating point or a decimal library. Parsing rejects noncanonical inputs and excess precision; calculations retain all digits. USD prices retain their own scale, totals include available + pending + claiming, and only the final USD display is rounded half-up to cents. Available USD is shown separately. Max uses the entire available amount; the fee is deducted from it. Blocking a non-positive net receipt is an explicit conservative UI assumption beyond the API's min/max/precision rules.
+
+**Balance after claim.** We compared server snapshots plus a separate claim state against an optimistic reservation overlay ([discussion](ai-logs/002-implementation.md#assistant--balance-after-claim-alternatives-and-selection)). I chose snapshots, labelled with their actual asOf time. The asset's claim action stays paused while the outcome is unknown/pending, then until a snapshot is at least as new as the terminal updatedAt. This avoids both accidental resubmission against a stale balance and a guessed deduction that later jumps back or gets counted twice. Other assets remain usable.
+
+**Unknown result.** Before POST, save a UUID Idempotency-Key and immutable body in a token-scoped journal. Lost responses use the same identity on retry; known ids use GET polling. A timeout is never represented as a failed claim. HTTP 400/401 are definite rejections; ambiguous errors remain unresolved. 429 applies a shared cooldown to that API client. The token and journal live only in sessionStorage: reload is recoverable in the same tab, but clearing storage/closing the tab ends recovery. No token is in the code or deployed bundle.
 
 ## Working with AI
 
-This section will be completed with actual, linked events before submission. The log is an English translation of the Slovak conversation; tool outcomes are labelled separately. No fictional prompts or disagreements will be added.
-
-- Verification caught risky/incorrect output: the first Home lint run found render-time Date.now() and an immediate state update from the fetch effect. These were corrected; see [actual findings](ai-logs/002-implementation.md#tool-outcomes--actual-findings).
-- Prompt that needed revision: not recorded yet.
-- Human disagreement/rejected AI suggestion: not recorded yet. The AI's own comparison of alternatives is not represented as a human disagreement.
+1. **Prompt refined:** I asked to remove website token entry and use a local .env. The assistant identified the explicit brief requirement for reviewer-supplied tokens. I clarified “if it is in the brief, leave it and work according to the brief.” We retained runtime token entry rather than implementing a conflicting request ([exchange](ai-logs/002-implementation.md#user--challenge-to-token-setup)).
+2. **Wrong/risky AI output caught:** the first decoder checked amount strings individually but accepted fee + receiveAmount different from amount. A deliberately inconsistent fixture failed with “Missing expected rejection”; exact arithmetic consistency and POST-intent matching were added, and the test passed ([failure and fix](ai-logs/002-implementation.md#tool-evidence--wrongrisky-ai-output)).
+3. **Different choice from the AI default:** during pre-task preparation, the assistant proposed Cloudflare Pages. I suggested EAS Hosting; we used and verified EAS instead ([pre-task exchange](ai-logs/003-hosting-preparation.md)). This happened before the timed task and is not claimed as timed implementation work.
 
 ## Not done / known issues
 
-Implementation is in progress: claim UI integration, journal/retry tests, live claim verification, optional Activity and final review remain. The first Home deployment and ten financial tests have passed. No physical phone has been verified yet. No real money is transferred by this test API. The repository retains clearly identified pre-task setup history.
+Physical phone testing is not yet confirmed; browser checks used 390 × 844. A live 0.01 ETH claim encountered a real timeout, survived reload, and safe replay recovered its completed result (fee 0.0012, received 0.0088). Live Activity pagination and a normal pending-to-terminal polling path are being checked. Failure, conflict, rate limits and corrupt-journal handling have focused synthetic tests where available, not a claim that every branch occurred live. Cross-tab coordination and recovery after browser storage is cleared are not implemented; a production financial app would need server-backed reconciliation and authentication. This is a fake-data API; no real funds are transferred.

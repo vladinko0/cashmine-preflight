@@ -7,16 +7,27 @@ export interface Balance {
   claiming: string;
   usdPrice: string;
 }
-export interface Balances { asOf: string; items: Balance[] }
+export interface Balances {
+  asOf: string;
+  items: Balance[];
+}
 export interface ClaimOptions {
   asset: string;
   minAmount: string;
   fee: string;
   destinations: { id: string; label: string }[];
 }
-export interface ClaimBody { asset: string; amount: string; destinationId: string }
-export const claimStatus = { pending: 'pending', completed: 'completed', failed: 'failed' } as const;
-export type ClaimStatus = typeof claimStatus[keyof typeof claimStatus];
+export interface ClaimBody {
+  asset: string;
+  amount: string;
+  destinationId: string;
+}
+export const claimStatus = {
+  pending: 'pending',
+  completed: 'completed',
+  failed: 'failed',
+} as const;
+export type ClaimStatus = (typeof claimStatus)[keyof typeof claimStatus];
 export interface Claim extends ClaimBody {
   id: string;
   fee: string;
@@ -36,4 +47,7 @@ export interface ActivityItem {
   relatedId: string | null;
   createdAt: string;
 }
-export interface ActivityPage { items: ActivityItem[]; nextCursor: string | null }
+export interface ActivityPage {
+  items: ActivityItem[];
+  nextCursor: string | null;
+}

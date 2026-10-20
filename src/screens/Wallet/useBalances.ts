@@ -23,7 +23,9 @@ export const useBalances = (api: ApiClient) => {
     try {
       const result = await api.balances(controller.signal);
       if (!active.current) return;
-      setData((previous) => !previous || Date.parse(result.asOf) >= Date.parse(previous.asOf) ? result : previous);
+      setData((previous) =>
+        !previous || Date.parse(result.asOf) >= Date.parse(previous.asOf) ? result : previous,
+      );
       setError('');
     } catch (failure) {
       if (!active.current) return;
@@ -42,7 +44,20 @@ export const useBalances = (api: ApiClient) => {
     const initial = setTimeout(refresh, 0);
     const poll = setInterval(refresh, networkTiming.balancePollMs);
     const tick = setInterval(() => setNow(Date.now()), 1000);
-    return () => { active.current = false; abortRef.current?.abort(); clearTimeout(initial); clearInterval(poll); clearInterval(tick); };
+    return () => {
+      active.current = false;
+      abortRef.current?.abort();
+      clearTimeout(initial);
+      clearInterval(poll);
+      clearInterval(tick);
+    };
   }, [refresh]);
-  return { data, busy, error, refresh, now, ageSeconds: data ? Math.max(0, Math.floor((now - Date.parse(data.asOf)) / 1000)) : 0 };
+  return {
+    data,
+    busy,
+    error,
+    refresh,
+    now,
+    ageSeconds: data ? Math.max(0, Math.floor((now - Date.parse(data.asOf)) / 1000)) : 0,
+  };
 };

@@ -14,7 +14,9 @@ export const useSession = () => {
       const scope = await tokenScope(cleaned);
       saveToken(cleaned);
       setSession({ token: cleaned, scope });
-    } catch { setError('Browser session storage is unavailable. Enable storage and try again.'); }
+    } catch {
+      setError('Browser session storage is unavailable. Enable storage and try again.');
+    }
   }, []);
   useEffect(() => {
     let active = true;
@@ -24,15 +26,23 @@ export const useSession = () => {
         try {
           const scope = await tokenScope(token);
           if (active) setSession({ token, scope });
-        } catch { if (active) setError('Unable to restore this browser session. Please reconnect.'); }
+        } catch {
+          if (active) setError('Unable to restore this browser session. Please reconnect.');
+        }
       }
       if (active) setReady(true);
     };
     restore();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
   const disconnect = useCallback(() => {
-    try { clearToken(); } catch { /* Keep the in-memory session disconnected even when storage is unavailable. */ }
+    try {
+      clearToken();
+    } catch {
+      /* Keep the in-memory session disconnected even when storage is unavailable. */
+    }
     setSession(null);
   }, []);
   return { session, ready, error, connect, disconnect };
