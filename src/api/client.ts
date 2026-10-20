@@ -1,4 +1,5 @@
 // src/api/client.ts
+import { decimal, equalExact } from '../money';
 import type { ClaimBody } from './types';
 import { decodeActivity, decodeBalances, decodeClaim, decodeOptions } from './validation';
 
@@ -50,7 +51,11 @@ export const createApi = (token: string, transport: typeof fetch = fetch) => {
   return {
     balances: (signal?: AbortSignal) => request('/v1/balances', decodeBalances, { signal }),
     options: (asset: string, signal?: AbortSignal) => request(`/v1/claim-options?asset=${encodeURIComponent(asset)}`, decodeOptions, { signal }),
-    submit: (body: ClaimBody, key: string, signal?: AbortSignal) => request('/v1/claims', decodeClaim, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify(body), signal }),
+    submit: (body: ClaimBody, key: string, signal?: AbortSignal) => request('/v1/claims', (value) => {
+      const claim = decodeClaim(value);
+      if (claim.asset !== body.asset || claim.destinationId !== body.destinationId || !equalExact(decimal(claim.amount), decimal(body.amount))) throw new Error('Claim response does not match the submitted intent.');
+      return claim;
+    }, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify(body), signal }),
     claim: (id: string, signal?: AbortSignal) => request(`/v1/claims/${encodeURIComponent(id)}`, decodeClaim, { signal }),
     activity: (cursor?: string, signal?: AbortSignal) => request(`/v1/activity?limit=20${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`, decodeActivity, { signal }),
   };

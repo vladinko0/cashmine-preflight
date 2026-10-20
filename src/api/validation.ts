@@ -1,6 +1,6 @@
 // src/api/validation.ts
 import type { ActivityPage, Balances, Claim, ClaimOptions } from './types';
-import { parseUnits, decimal } from '../money';
+import { addExact, equalExact, parseUnits, decimal } from '../money';
 
 const record = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid API response.');
@@ -52,7 +52,7 @@ export const decodeClaim = (value: unknown): Claim => {
   const amount = string(response.amount);
   const fee = string(response.fee);
   const receiveAmount = string(response.receiveAmount);
-  [amount, fee, receiveAmount].forEach(decimal);
+  if (!equalExact(addExact(decimal(fee), decimal(receiveAmount)), decimal(amount))) throw new Error('Claim fee and net amount do not match the gross amount.');
   return { id: string(response.id), asset: string(response.asset), amount, fee, receiveAmount, destinationId: string(response.destinationId), status: response.status as Claim['status'], failureReason: response.failureReason === null ? null : string(response.failureReason), createdAt: date(response.createdAt), updatedAt: date(response.updatedAt) };
 };
 export const decodeActivity = (value: unknown): ActivityPage => {

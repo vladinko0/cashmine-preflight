@@ -32,6 +32,10 @@ export const addExact = (left: ExactDecimal, right: ExactDecimal): ExactDecimal 
   const scale = Math.max(left.scale, right.scale);
   return { units: left.units * power(scale - left.scale) + right.units * power(scale - right.scale), scale };
 };
+export const equalExact = (left: ExactDecimal, right: ExactDecimal): boolean => {
+  const scale = Math.max(left.scale, right.scale);
+  return left.units * power(scale - left.scale) === right.units * power(scale - right.scale);
+};
 export const multiplyExact = (left: ExactDecimal, right: ExactDecimal): ExactDecimal => ({ units: left.units * right.units, scale: left.scale + right.scale });
 export const totalUsd = (items: Balance[], bucket?: 'available' | 'pending' | 'claiming'): ExactDecimal => items.reduce((total, item) => {
   const assetUnits = bucket

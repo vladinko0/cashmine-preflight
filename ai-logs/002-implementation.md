@@ -43,3 +43,43 @@ An authenticated read request through curl also succeeded. The claim layer is wr
 ## Tool outcomes — Home checks
 
 Home: TypeScript and ESLint passed. Ten exact-money tests passed. The new Home/token web export was deployed to EAS Hosting successfully. Live API balances were checked with curl, not yet through a phone browser. These are separate verification levels.
+
+## Assistant — claim integration verification
+
+“Claim now has asset and destination selection, Max, fee/net receipt review and confirmation. Before submission, the immutable request body and idempotency key are saved; a restored in-flight request is treated as an unknown outcome and offers safe retry.
+
+The checks have so far found missing Node types in the test configuration. I will add them and tests for a lost response and a delayed snapshot.”
+
+## User — live Home verification
+
+“Yes, the balances loaded.”
+
+This is the user's response to the assistant asking them to enter the token directly on the live app and check USDT, BTC and ETH. The token was not sent back in chat. This confirms user-observed live Home loading, not a physical-phone claim test.
+
+## Assistant — money-response bug found by a failing test
+
+“You confirmed that the live Home loaded the balances. In claim tests I found another issue: the original API decoder would accept a response where fee + receiveAmount does not equal the claimed amount. The test correctly failed; I will add an exact check of this equality and check that the response matches the submitted intent.”
+
+## Tool evidence — wrong/risky AI output
+
+The first decoder written by this agent validated the three amount strings independently but not their relationship. Added a test with amount=0.5, fee=0.0012 and receiveAmount=0.4999. The test failed with “Missing expected rejection.” (18 passed, 1 failed). This is a synthetic inconsistent response, not a claim that the real API returned bad data. The fix checks fee + receiveAmount = amount with bigint arithmetic and checks that POST response asset, destination and amount match the persisted intent. A mismatch must remain an unknown outcome; it must never create a new intent.
+
+## User — challenge to token setup
+
+“But it cannot stay like this, that the token must be entered on the website. If necessary create a local .env where I can paste it.”
+
+## Assistant — explicit brief constraint and pushback
+
+“The task explicitly requires the opposite: ‘On first open, the app asks for the token … We will open your link with our own tokens.’ It also forbids the token in the deployed build. A .env.local file does not hide a value when it is embedded in client-side JavaScript.
+
+For submission, I therefore recommend retaining token input. I can adjust storage so you do not have to enter it again in the same browser after closing the tab.”
+
+## Assistant — clarification question
+
+“The token form is explicitly required by the brief and reviewers will use their own tokens. Should I retain it and remember the token after closing the tab, or keep the current tab-session-only storage? The token will not go into the public build.”
+
+Options: retain form and remember token in this browser; retain form and store only during the session. No answer had arrived at the time of this entry; storage behaviour remains unchanged.
+
+## Tool outcomes — claim implementation
+
+All 19 targeted tests now pass, including the previously failing claim arithmetic consistency test. TypeScript, ESLint and the claim-capable production web export passed. Unknown requests are persisted before POST, restored with the same key/body, and retry uses that identity. Pending known ids are polled; completed/failed claims keep the asset paused until a snapshot catches up. Tests cover lost responses with a fake transport and stale snapshots; these are not yet evidence of a live claim.

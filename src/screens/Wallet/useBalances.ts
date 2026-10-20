@@ -44,5 +44,5 @@ export const useBalances = (api: ApiClient) => {
     const tick = setInterval(() => setNow(Date.now()), 1000);
     return () => { active.current = false; abortRef.current?.abort(); clearTimeout(initial); clearInterval(poll); clearInterval(tick); };
   }, [refresh]);
-  return { data, busy, error, refresh, ageSeconds: data ? Math.max(0, Math.floor((now - Date.parse(data.asOf)) / 1000)) : 0 };
+  return { data, busy, error, refresh, now, ageSeconds: data ? Math.max(0, Math.floor((now - Date.parse(data.asOf)) / 1000)) : 0 };
 };
