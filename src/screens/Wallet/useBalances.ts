@@ -8,6 +8,7 @@ export const useBalances = (api: ApiClient) => {
   const [data, setData] = useState<Balances | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState('');
+  const [needsAuth, setNeedsAuth] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const active = useRef(true);
   const inFlight = useRef(false);
@@ -32,6 +33,7 @@ export const useBalances = (api: ApiClient) => {
       if (failure instanceof ApiError) {
         nextRequestAt.current = Date.now() + failure.retryAfterMs;
         unauthorized.current = failure.status === 401;
+        setNeedsAuth(failure.status === 401);
       }
       setError(errorMessage(failure));
     } finally {
@@ -58,6 +60,7 @@ export const useBalances = (api: ApiClient) => {
     error,
     refresh,
     now,
+    needsAuth,
     ageSeconds: data ? Math.max(0, Math.floor((now - Date.parse(data.asOf)) / 1000)) : 0,
   };
 };

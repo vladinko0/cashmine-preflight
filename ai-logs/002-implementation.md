@@ -131,3 +131,29 @@ I will now format the code and check the added parts. Then I will verify history
 ## Tool outcomes — Activity checks
 
 All 20 tests and the web export passed. TypeScript caught an outdated ScrollView ref type; checked the installed RN 0.88 generated declarations and used ScrollViewInstance. ESLint then treated the wallet carrier object containing that ref as ref-derived data throughout render. Split the imperative scroll-reset ref into its own hook, keeping normal wallet state separate; lint is being rerun. These errors and fixes were not hidden from the working record.
+
+## Assistant — final verification update
+
+“The current code has successful TypeScript, lint, web export and 20 tests. I added NOTES.md with three actual AI-work moments and checked that the personal token is absent from sources, build, logs and Git history.
+
+I will deploy Activity and verify pagination and an ordinary pending claim. Then I will update the roadmap from the results.”
+
+## Assistant — Activity and unauthorized session findings
+
+“Live Activity displays the completed test claim as well as historical accruals, reversals and claims with the correct signs. I also checked the invalid-token error and return to the connection form.
+
+During this check I noticed an inaccurate label: after an error it still said Loading your balances. I will correct it and offer reconnection directly for an invalid token.”
+
+## Tool outcomes — real unauthorized request
+
+In a separate browser tab, entered the non-secret value invalid-test-token. The live API produced the invalid/expired-token message; Change token returned to the empty secure form. The valid-token tab remained separate. Found and fixed the misleading loading label and disabled claim actions after a known 401. No personal token was entered in code or logs for this negative test.
+
+## Assistant — successful, failed and paginated live flows
+
+“Another live flow passed: the USDT claim completed automatically. For BTC I captured pending and, after refreshing the page, failed with the server's reason. Activity loaded both pages to the end; the original ETH claim appears exactly once.
+
+For a failed claim I will make the copy more precise so it clearly shows the returned gross amount and does not imply that the user received net funds or paid the fee.”
+
+## Tool evidence — additional live flows
+
+Activity displayed 20 initial records, then loaded the remaining records and showed the end-of-history marker. The original ETH claim reference occurred once in the rendered history. A 10 USDT claim completed automatically (reference clm_37e979c965f0, fee 1.5, received 8.5). A 0.0005 BTC claim (reference clm_d0252b5f4650) visibly entered pending; BTC was paused while other assets remained claimable. After a reload it showed failed: the destination rejected the transfer and the server returned the amount. No local refund was applied. The source was then adjusted to display Returned to available: gross amount for a failed claim instead of a fee/net payout summary. Also prevented a disconnected request instance from overwriting a newer token session's saved state.

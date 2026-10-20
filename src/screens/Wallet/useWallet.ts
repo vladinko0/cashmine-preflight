@@ -13,7 +13,9 @@ export const useWallet = ({ token, scope }: Props) => {
   const params = useLocalSearchParams<{ claim?: string; tab?: string }>();
   const selectedBalance = balances.data?.items.find((balance) => balance.asset === params.claim);
   const assetBlocked = (asset: string) =>
-    !!claims.storageError || isAssetBlocked(claims.operations, asset, balances.data?.asOf);
+    !!claims.storageError ||
+    balances.needsAuth ||
+    isAssetBlocked(claims.operations, asset, balances.data?.asOf);
   return {
     api,
     balances,

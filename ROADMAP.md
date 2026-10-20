@@ -4,7 +4,7 @@
 Zdroj: zadanie doručené 20. 10. 2026 a živá [API dokumentácia](https://task-api.cashmine.io/docs).
 Časové okno: **14:00–16:00 UTC / 16:00–18:00 CEST**, 20. 10. 2026.
 Po 16:00 UTC nerobiť push ani redeploy. Časy nižšie sú cieľové, nie záruka.
-Príprava prostredia vznikla pred úlohou; funkčné riešenie zatiaľ nie je implementované.
+Príprava prostredia vznikla pred úlohou; Home, Claim, finančné testy a voliteľná Activity sú implementované. Výsledky overení sú uvedené nižšie.
 
 ## Poradie a pravidlá rozsahu
 
@@ -19,55 +19,55 @@ Uprednostniť správnosť peňazí pred vizuálnymi detailmi. Expo + TypeScript,
 
 - [x] Prečítať celé zadanie a verejnú API dokumentáciu; token nekopírovať do projektu.
 - [x] Overiť, že dokumentácia uvádza CORS pre ľubovoľný origin, desatinné reťazce, 15-sekundové snapshoty a idempotentný POST.
-- [ ] Zapísať typy odpovedí, chýb a stavov podľa dokumentácie; API base URL držať na jednom mieste.
-- [ ] Zvoliť presnú reprezentáciu súm. Navrhnutý smer: celočíselné jednotky cez bigint s explicitnou škálou; alternatíva: desatinná knižnica. Zvoliť až po porovnaní jednoduchej implementácie a testovateľnosti. Nepoužiť Number/parseFloat na finančné výpočty.
-- [ ] Pre USD násobenie zachovať aj škálu usdPrice a zaokrúhliť až zobrazenie výsledného súčtu; nepredpokladať rovnaký počet desatinných miest ceny a aktíva.
-- [ ] Požiadať AI o aspoň dva prístupy k zostatku po claime, uložiť skutočnú diskusiu do ai-logs/ a až potom vybrať riešenie. Toto nie je splnené samotným zoznamom v roadmape.
-- [ ] Porovnať aspoň: (A) serverový snapshot s označením neaktuálnosti, samostatným claim stavom a dočasným blokovaním ďalšieho claimu aktíva; (B) lokálnu rezerváciu sumy s explicitným zosúladením, ktoré zabráni dvojitému odpočtu po novom snapshote. Zapísať výber a dôvod do NOTES.md.
-- [ ] Rozhodnúť správanie unknown výsledku: zachovať rovnaký Idempotency-Key aj nezmenené telo, nespúšťať nový claim s novým kľúčom ako retry.
-- [ ] Vyjasniť v NOTES.md význam total USD: navrhnutý súčet available + pending + claiming, rozdelenie zobraziť osobitne; neprezentovať pending/claiming ako sumu na okamžité vybratie.
+- [x] Zapísať typy odpovedí, chýb a stavov podľa dokumentácie; API base URL držať na jednom mieste.
+- [x] Zvoliť presnú reprezentáciu súm. Navrhnutý smer: celočíselné jednotky cez bigint s explicitnou škálou; alternatíva: desatinná knižnica. Zvoliť až po porovnaní jednoduchej implementácie a testovateľnosti. Nepoužiť Number/parseFloat na finančné výpočty.
+- [x] Pre USD násobenie zachovať aj škálu usdPrice a zaokrúhliť až zobrazenie výsledného súčtu; nepredpokladať rovnaký počet desatinných miest ceny a aktíva.
+- [x] Požiadať AI o aspoň dva prístupy k zostatku po claime, uložiť skutočnú diskusiu do ai-logs/ a až potom vybrať riešenie. Toto nie je splnené samotným zoznamom v roadmape.
+- [x] Porovnať aspoň: (A) serverový snapshot s označením neaktuálnosti, samostatným claim stavom a dočasným blokovaním ďalšieho claimu aktíva; (B) lokálnu rezerváciu sumy s explicitným zosúladením, ktoré zabráni dvojitému odpočtu po novom snapshote. Zapísať výber a dôvod do NOTES.md.
+- [x] Rozhodnúť správanie unknown výsledku: zachovať rovnaký Idempotency-Key aj nezmenené telo, nespúšťať nový claim s novým kľúčom ako retry.
+- [x] Vyjasniť v NOTES.md význam total USD: navrhnutý súčet available + pending + claiming, rozdelenie zobraziť osobitne; neprezentovať pending/claiming ako sumu na okamžité vybratie.
 
 Hotové, keď sú finančné a sieťové invarianty explicitné a nie sú založené na vymyslených API poliach.
 
 ## 1. Token, API a Home — cieľ do 14:35 UTC
 
-- [ ] Pri prvom otvorení zobraziť vstup tokenu; uchovať ho iba v prehliadači, napríklad sessionStorage, a umožniť zmenu/odhlásenie. Nevložiť token do URL, zdrojov, buildu, .env určeného na bundlovanie ani logov.
-- [ ] Pri zmene tokenu zrušiť staré requesty/polling a oddeliť cache aj rozpracované operácie podľa identity; stará odpoveď nesmie prepísať nového používateľa.
-- [ ] API klient: Authorization Bearer, timeout/AbortController, čitateľná typovaná chyba, 401 návrat na token, 429 rešpektuje retryAfterMs/Retry-After. Dokumentácia nie je dôkaz dostupnosti autentifikovaného API.
-- [ ] GET /v1/balances: aktívum, available, pending, claiming, USD súčet, čas asOf a viditeľná čerstvosť dát. Nezamieňať čas lokálneho fetchu za čas snapshotu.
-- [ ] Loading, počiatočná chyba s Retry, prázdny výsledok a refresh; pri chybe refreshu ponechať posledné dáta s upozornením.
-- [ ] Úzky viewport približne 390 px; čitateľné sumy, formuláre a ovládanie bez horizontálneho overflow.
-- [ ] Prvý funkčný Home nasadiť skoro na existujúci EAS Hosting a overiť verejný odkaz s tokenom zadaným používateľom až v aplikácii.
-- [ ] Commit a push funkčného kroku; najneskôr každých 30 minút počas práce, bez squashovania a bez prepisovania historických časov.
+- [x] Pri prvom otvorení zobraziť vstup tokenu; uchovať ho iba v prehliadači, napríklad sessionStorage, a umožniť zmenu/odhlásenie. Nevložiť token do URL, zdrojov, buildu, .env určeného na bundlovanie ani logov.
+- [x] Pri zmene tokenu zrušiť staré requesty/polling a oddeliť cache aj rozpracované operácie podľa identity; stará odpoveď nesmie prepísať nového používateľa.
+- [x] API klient: Authorization Bearer, timeout/AbortController, čitateľná typovaná chyba, 401 návrat na token, 429 rešpektuje retryAfterMs/Retry-After. Dokumentácia nie je dôkaz dostupnosti autentifikovaného API.
+- [x] GET /v1/balances: aktívum, available, pending, claiming, USD súčet, čas asOf a viditeľná čerstvosť dát. Nezamieňať čas lokálneho fetchu za čas snapshotu.
+- [x] Loading, počiatočná chyba s Retry, prázdny výsledok a refresh; pri chybe refreshu ponechať posledné dáta s upozornením.
+- [x] Úzky viewport približne 390 px; čitateľné sumy, formuláre a ovládanie bez horizontálneho overflow.
+- [x] Prvý funkčný Home nasadiť skoro na existujúci EAS Hosting a overiť verejný odkaz s tokenom zadaným používateľom až v aplikácii.
+- [x] Commit a push funkčného kroku; najneskôr každých 30 minút počas práce, bez squashovania a bez prepisovania historických časov.
 
 Hotové, keď sa na živom webe načítajú reálne dáta pre zadaný token a funguje chyba/retry/refresh.
 
 ## 2. Presná amount logika a testy — cieľ do 14:50 UTC
 
-- [ ] Parsovanie bez floating-point chýb, presný prevod medzi reťazcom a najmenšími jednotkami.
-- [ ] API formát: číslice, voliteľná bodka s ďalšími číslicami, bez úvodných núl; odmietnuť .5, 1., 05, 1e-3, záporné sumy a prekročenie decimals. Správanie medzier a čiarky zvoliť explicitne; neprepisovať ticho nejednoznačný vstup.
-- [ ] Validácia podľa minAmount <= amount <= available a asset decimals; nespoliehať sa na snapshot ako na garanciu serverového zostatku.
-- [ ] Fee je odpočítaný z amount: receiveAmount = amount - fee. Max = dostupná claim suma, nie available mínus fee. Nepridávať nevysvetlené obchodné pravidlá; prípadný nekladný receiveAmount riešiť explicitne.
-- [ ] Unit testy: platné/neplatné parsovanie, presnosť, min/max hranice a prekročenie, Max, presný poplatok/netto, USD súčet s rôznymi škálami, zaokrúhlenie až po súčte a nulové hodnoty.
-- [ ] Zvoliť jednoduchý web-kompatibilný test runner, pridať `yarn test` a overiť výsledok. Unit testy nesmú používať osobný token.
+- [x] Parsovanie bez floating-point chýb, presný prevod medzi reťazcom a najmenšími jednotkami.
+- [x] API formát: číslice, voliteľná bodka s ďalšími číslicami, bez úvodných núl; odmietnuť .5, 1., 05, 1e-3, záporné sumy a prekročenie decimals. Správanie medzier a čiarky zvoliť explicitne; neprepisovať ticho nejednoznačný vstup.
+- [x] Validácia podľa minAmount <= amount <= available a asset decimals; nespoliehať sa na snapshot ako na garanciu serverového zostatku.
+- [x] Fee je odpočítaný z amount: receiveAmount = amount - fee. Max = dostupná claim suma, nie available mínus fee. Nepridávať nevysvetlené obchodné pravidlá; prípadný nekladný receiveAmount riešiť explicitne.
+- [x] Unit testy: platné/neplatné parsovanie, presnosť, min/max hranice a prekročenie, Max, presný poplatok/netto, USD súčet s rôznymi škálami, zaokrúhlenie až po súčte a nulové hodnoty.
+- [x] Zvoliť jednoduchý web-kompatibilný test runner, pridať `yarn test` a overiť výsledok. Unit testy nesmú používať osobný token.
 
 Hotové, keď finančné funkcie majú zrozumiteľné izolované testy a žiadne peňažné operácie cez binárny float.
 
 ## 3. Claim od formulára po vysporiadanie — cieľ do 15:25 UTC
 
-- [ ] Výber aktíva → GET /v1/claim-options?asset=...; spracovať načítanie, chybu a zmenu aktíva bez stale odpovedí.
-- [ ] Zobraziť minimum, fee a destinations; umožniť vybrať platný cieľ a vyplniť amount alebo Max.
-- [ ] Pred potvrdením jasne ukázať aktívum, amount, destination, fee a receiveAmount.
-- [ ] Pred POST uložiť immutable telo a nový Idempotency-Key pre konkrétny používateľský úmysel; počas odosielania zabrániť dvojitému kliknutiu. Kľúč má 1–100 znakov.
-- [ ] POST /v1/claims: spracovať 201 aj idempotentné 200 ako úspech; serverovú validáciu ukázať pri poli, 409 nevyriešiť automatickým vytvorením nového kľúča.
-- [ ] Pri timeoute, strate siete alebo nejednoznačnom serverovom výsledku ukázať „výsledok zatiaľ nepoznáme“; nenechať používateľa nevedomky vytvoriť ďalší claim. Retry odošle identický kľúč aj telo. Pri 429 počkať požadovaný interval.
-- [ ] Ak už máme claim id, stav overovať GET /v1/claims/{id}; obnova po refreshi má zachovať identitu rozpracovanej operácie. Pred získaním id obnoviť unknown operáciu replayom rovnakého POST.
-- [ ] Pending stav sledovať primeraným pollingom; približne 20 sekúnd je očakávanie, nie klientsky dôkaz zlyhania. Po completed/failed polling zastaviť; pri 401 ho zastaviť, pri 429 spomaliť.
-- [ ] Completed: ukázať úspech a serverové receiveAmount; failed: failureReason a informácia o návrate sumy do available.
-- [ ] Zosúladiť balances podľa zvoleného prístupu. Snapshot môže byť 15 s starý; nenahradiť ním nekriticky čerstvý claim stav, neodpočítať rovnaký claim dvakrát a pri failed nevykonať neoverenú lokálnu refundáciu.
-- [ ] Pri konzervatívnom prístupe uvoľniť blokovanie aktíva až po známom výsledku a dostatočne novom serverovom snapshote; pri probléme ponúknuť refresh/retry a vysvetlenie.
-- [ ] Overiť reálny úspešný tok na test API. Neznámy výsledok a duplicity overiť cieleným testom/fake transportom, ak sa nedajú bezpečne a deterministicky vyvolať na API. Neoznačiť simuláciu za živé overenie.
-- [ ] Priebežný commit/push bez squashovania.
+- [x] Výber aktíva → GET /v1/claim-options?asset=...; spracovať načítanie, chybu a zmenu aktíva bez stale odpovedí.
+- [x] Zobraziť minimum, fee a destinations; umožniť vybrať platný cieľ a vyplniť amount alebo Max.
+- [x] Pred potvrdením jasne ukázať aktívum, amount, destination, fee a receiveAmount.
+- [x] Pred POST uložiť immutable telo a nový Idempotency-Key pre konkrétny používateľský úmysel; počas odosielania zabrániť dvojitému kliknutiu. Kľúč má 1–100 znakov.
+- [x] POST /v1/claims: spracovať 201 aj idempotentné 200 ako úspech; serverovú validáciu ukázať pri poli, 409 nevyriešiť automatickým vytvorením nového kľúča.
+- [x] Pri timeoute, strate siete alebo nejednoznačnom serverovom výsledku ukázať „výsledok zatiaľ nepoznáme“; nenechať používateľa nevedomky vytvoriť ďalší claim. Retry odošle identický kľúč aj telo. Pri 429 počkať požadovaný interval.
+- [x] Ak už máme claim id, stav overovať GET /v1/claims/{id}; obnova po refreshi má zachovať identitu rozpracovanej operácie. Pred získaním id obnoviť unknown operáciu replayom rovnakého POST.
+- [x] Pending stav sledovať primeraným pollingom; približne 20 sekúnd je očakávanie, nie klientsky dôkaz zlyhania. Po completed/failed polling zastaviť; pri 401 ho zastaviť, pri 429 spomaliť.
+- [x] Completed: ukázať úspech a serverové receiveAmount; failed: failureReason a informácia o návrate sumy do available.
+- [x] Zosúladiť balances podľa zvoleného prístupu. Snapshot môže byť 15 s starý; nenahradiť ním nekriticky čerstvý claim stav, neodpočítať rovnaký claim dvakrát a pri failed nevykonať neoverenú lokálnu refundáciu.
+- [x] Pri konzervatívnom prístupe uvoľniť blokovanie aktíva až po známom výsledku a dostatočne novom serverovom snapshote; pri probléme ponúknuť refresh/retry a vysvetlenie.
+- [x] Overiť reálny úspešný tok na test API. Neznámy výsledok a duplicity overiť cieleným testom/fake transportom, ak sa nedajú bezpečne a deterministicky vyvolať na API. Neoznačiť simuláciu za živé overenie.
+- [x] Priebežný commit/push bez squashovania.
 
 Hotové, keď jeden zámer nespôsobí dva claimy a používateľ vie rozlíšiť sending, unknown, pending, completed a failed.
 
@@ -75,10 +75,10 @@ Hotové, keď jeden zámer nespôsobí dva claimy a používateľ vie rozlíši�
 
 Začať iba ak sú Home, Claim a požadované finančné testy funkčné.
 
-- [ ] GET /v1/activity s limit <= 20, nextCursor a načítaním ďalšej strany; koniec pri null.
-- [ ] accrual, reversal a claim, status, asset, signed amount, čas, exchange/relatedId podľa dostupnosti.
-- [ ] Neotáčať znamienko už zápornej sumy, nerozbiť stránkovanie duplicitnými fetchmi; loading/error/retry/empty.
-- [ ] Ak čas nestačí, preskočiť a pravdivo uviesť v NOTES.md.
+- [x] GET /v1/activity s limit <= 20, nextCursor a načítaním ďalšej strany; koniec pri null.
+- [x] accrual, reversal a claim, status, asset, signed amount, čas, exchange/relatedId podľa dostupnosti.
+- [x] Neotáčať znamienko už zápornej sumy, nerozbiť stránkovanie duplicitnými fetchmi; loading/error/retry/empty.
+- Activity nebolo potrebné preskočiť; bola implementovaná aj živo overená.
 
 ## 5. Overenie, poznámky a AI logy — 15:25–15:45 UTC
 
@@ -108,5 +108,22 @@ Začať iba ak sú Home, Claim a požadované finančné testy funkčné.
 - Základ API: https://task-api.cashmine.io
 - Dokumentácia API: https://task-api.cashmine.io/docs
 
-V čase vzniku roadmapy live web stále obsahuje iba prípravnú Expo obrazovku.
-Táto roadmapa je plán; odškrtnuté sú len skutočne vykonané kroky.
+## Overený priebeh implementácie
+
+Odškrtnuté implementačné body znamenajú napísaný a lokálne overený rozsah; neznamenajú, že sa každá chybová vetva vyskytla na živom API.
+
+| Oblasť | Výsledok | Druh dôkazu |
+| --- | --- | --- |
+| TypeScript, lint, web export | Úspešné; po posledných malých UI úpravách sa opakujú len dotknuté kontroly | Lokálne nástroje |
+| Finančná a bezpečnostná logika | 20 úspešných testov vrátane presnosti, idempotentného replay, stale snapshotu, 409, 429 a poškodeného journalu | Unit/fake transport; nie živé chyby 409/429 |
+| Home | USDT/BTC/ETH a presné súčty načítané na živom webe | Používateľské potvrdenie + browser |
+| ETH claim 0.01 | Skutočný timeout → unknown → reload → safe retry → pôvodný completed claim, fee 0.0012 a receive 0.0088 | Živé test API cez nasadený web |
+| Dvojklik / duplicita | Jeden ETH claim; jeho referencia sa vo vykreslenej histórii objavila raz | Browser + samostatný idempotency test |
+| USDT claim 10 | Automaticky completed, fee 1.5 a receive 8.5 | Živý web |
+| BTC claim 0.0005 | Pozorovaný pending, blokované BTC; po reload failed s dôvodom odmietnutého cieľa a vrátenia sumy | Živý web |
+| Activity | Prvá aj ďalšia strana, znamienka, historické failed/completed/reversal a koniec pri nextCursor null | Živý web + unit test deduplikácie |
+| Neplatný token | Chyba invalid/expired; Change token otvorilo prázdny formulár | Živý negatívny test so zástupným tokenom |
+| Mobilný viewport | 390 × 844, amount/Max/confirmation a claim výsledky | Browser; nejde o fyzický telefón |
+| Fyzický telefón | Čaká sa na konkrétne používateľské potvrdenie | Zatiaľ neoverené |
+
+Osobný token bol presne porovnaný so zdrojmi, exportom, logmi a Git históriou: nenachádza sa v nich. V AI logoch je celé zadanie s redigovaným tokenom a skutočné diskusie aj neúspešné kontroly. Pred odovzdaním zostáva finálna kontrola, push a nasadenie posledných UI opráv; email posiela používateľ.

@@ -34,12 +34,15 @@ export const useClaimOperations = (api: ApiClient, scope: string, snapshotAsOf?:
     [scope],
   );
   const update = useCallback(
-    (key: string, changes: Partial<ClaimOperation>) =>
+    (key: string, changes: Partial<ClaimOperation>) => {
+      // Preserve the saved sending intent for recovery; a disconnected instance must not overwrite a newer session.
+      if (!active.current) return;
       persist(
         operationsRef.current.map((operation) =>
           operation.key === key ? { ...operation, ...changes } : operation,
         ),
-      ),
+      );
+    },
     [persist],
   );
   const send = useCallback(

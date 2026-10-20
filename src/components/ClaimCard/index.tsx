@@ -32,10 +32,9 @@ export const ClaimCard: React.FC<Props> = ({ operation, snapshotAsOf, now, retry
       {claim && (
         <>
           <Text style={styles.body}>
-            Fee: {claim.fee} {claim.asset}
-            {'\n'}
-            {claim.status === 'completed' ? 'Received' : 'Net amount'}: {claim.receiveAmount}{' '}
-            {claim.asset}
+            {claim.status === 'failed'
+              ? `Returned to available: ${claim.amount} ${claim.asset}`
+              : `Fee: ${claim.fee} ${claim.asset}\n${claim.status === 'completed' ? 'Received' : 'To receive'}: ${claim.receiveAmount} ${claim.asset}`}
           </Text>
           <Text selectable style={styles.id}>
             Reference: {claim.id}
@@ -51,7 +50,7 @@ export const ClaimCard: React.FC<Props> = ({ operation, snapshotAsOf, now, retry
       {claim?.status === 'failed' && (
         <Notice
           error
-          text={`${claim.failureReason ?? 'The claim failed.'} The server returns the amount to your available balance.`}
+          text={claim.failureReason ?? 'The claim failed. No transfer was completed.'}
         />
       )}
       {waitingSnapshot && (

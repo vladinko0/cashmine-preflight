@@ -27,6 +27,9 @@ export const WalletScreen: React.FC<Props> = (props) => {
         <Text style={styles.brand}>cashmine</Text>
         <Action compact secondary label="Change token" onPress={props.disconnect} />
       </View>
+      {balances.needsAuth && (
+        <Notice error text="Your token is invalid or expired. Use Change token to reconnect." />
+      )}
       {!wallet.selectedBalance && (
         <View style={styles.row}>
           <View style={styles.flex}>
@@ -79,17 +82,19 @@ export const WalletScreen: React.FC<Props> = (props) => {
             <Text style={[styles.muted, styles.flex]}>
               {balances.data
                 ? `Snapshot ${balances.ageSeconds}s ago · ${new Date(balances.data.asOf).toLocaleTimeString()}`
-                : 'Loading your balances…'}
+                : balances.busy
+                  ? 'Loading your balances…'
+                  : 'No balance snapshot loaded.'}
             </Text>
             <Action
               compact
               secondary
-              label="Refresh"
-              onPress={balances.refresh}
+              label={balances.needsAuth ? 'Reconnect' : 'Refresh'}
+              onPress={balances.needsAuth ? props.disconnect : balances.refresh}
               busy={balances.busy}
             />
           </View>
-          {!!balances.error && (
+          {!!balances.error && !balances.needsAuth && (
             <>
               <Notice text={balances.error} error />
               <Action
